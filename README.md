@@ -2,6 +2,8 @@
 
 Cruise control example - 
 ## To generate mdp without delay 
+```
+python cruise_control/no_td_mdp.py
 
 ## To generate mdp with constant delay 
 
