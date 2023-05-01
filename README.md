@@ -11,5 +11,5 @@ python safe_networked_robotics/cruise_control/constant_td_mdp.py time_delay
 ```
 ## To generate mdp with random delay
 ```
-python safe_networked_robotics/cruise_control/cruise_control.py time_delay
+python safe_networked_robotics/cruise_control/cruise_control.py
 ```
