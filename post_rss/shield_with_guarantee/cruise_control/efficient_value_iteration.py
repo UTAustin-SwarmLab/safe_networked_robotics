@@ -16,7 +16,7 @@ num_actions = transition.shape[1]
 bad_state_values = torch.zeros((num_states,)).to(device)
 bad_state_values[:132] = 1.0
 
-req_safety_probability = 0.1
+req_safety_probability = 0.05
 
 """
 performing value iteration to compute the pmax safety values
