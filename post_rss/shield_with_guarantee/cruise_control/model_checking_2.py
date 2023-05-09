@@ -1,8 +1,7 @@
 import sys
-sys.path.remove('/usr/lib/python3/dist-packages')
 import numpy as np 
 
-def ValueIteration(mdp, mdp_states, labels, num_actions, max_iter=10000, delta=1e-2):
+def ValueIteration(mdp, mdp_states, labels, num_actions, max_iter=10000, delta=1e-6):
     V = {tuple(mdp_state):0 for mdp_state in mdp_states}
 
     # Start value iteration
@@ -20,7 +19,7 @@ def ValueIteration(mdp, mdp_states, labels, num_actions, max_iter=10000, delta=1
 
             state_action_values_list = []    
         
-            for a in range(1, num_actions+1):
+            for a in range(num_actions):
                 #print(mdp_state,a)
                 state_action_pair = (mdp_state, a)
                 next_states = mdp[state_action_pair]
@@ -49,34 +48,35 @@ num_actions = 5
 mdp = np.load('constant_generated/mdp_%d_td.npy' % td, allow_pickle=True).item()
 state_action_pairs = list(mdp.keys())
 mdp_states = [state_action_pairs[i][0] for i in range(0, len(state_action_pairs), num_actions)]
-
 #print(state_action_pairs)
-#print(mdp_states)
+# print(mdp_states)
 
 
 
 bad_labels = {}
 for mdp_state in mdp_states:
-    if mdp_state[0] <= 30:
+    if mdp_state[0] < 132:
         bad_labels[mdp_state] = 1
     else:
         bad_labels[mdp_state] = 0
 
 state_pmax_values = ValueIteration(mdp, mdp_states, bad_labels, num_actions) 
-np.save('constant_generated_2/state_values_%d_td' % td, state_pmax_values)
+print(state_pmax_values)
+
+# np.save('constant_generated_2/state_values_%d_td' % td, state_pmax_values)
 
 state_action_values_dict = {}
 
-for mdp_state in mdp_states:
-    mdp_state = tuple(mdp_state)
-    state_action_values_list = []
-    for action in range(1, num_actions+1):
-        state_action_pair = (mdp_state, action)
-        next_states = mdp[state_action_pair]
+# for mdp_state in mdp_states:
+#     mdp_state = tuple(mdp_state)
+#     state_action_values_list = []
+#     for action in range(1, num_actions+1):
+#         state_action_pair = (mdp_state, action)
+#         next_states = mdp[state_action_pair]
         
-        next_states_pmax_values = [state_pmax_values[pnms] for pnms in next_states]
-        state_action_value = sum(next_states_pmax_values) / len(next_states_pmax_values)
-        state_action_values_dict[state_action_pair] = state_action_value
+#         next_states_pmax_values = [state_pmax_values[pnms] for pnms in next_states]
+#         state_action_value = sum(next_states_pmax_values) / len(next_states_pmax_values)
+#         state_action_values_dict[state_action_pair] = state_action_value
 
-np.save('constant_generated_2/state_action_values_%d_td' % td, state_action_values_dict)
+# np.save('constant_generated_2/state_action_values_%d_td' % td, state_action_values_dict)
 

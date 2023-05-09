@@ -45,20 +45,19 @@ safest_actions[mask] = True
 performinng binary search due to the non-decreasing property
 """
 
-
 delta_min = 0.0 
 delta_max = 1.0 
 delta = (delta_min + delta_max)/2
 guarantee = False 
 old_safety_probability = 1.0
+pmax_state_values = torch.zeros((num_states,), dtype=torch.float32).to(device) # initialization
+pmax_state_action_values = torch.zeros_like(pmin_state_action_values)
 
 while not guarantee:
     delta = (delta_min + delta_max)/2 # update delta
-    delta_safe_actions = torch.zeros_like(pmin_state_action_values)
 
-    # now let us add the actions that correspond state action value greater than delta
+    # now let us add the actions that correspond state action value greater than delta to the set of safe actions
     delta_safe_actions = pmin_state_action_values <= delta
-
     allowed_actions = torch.logical_or(safest_actions, delta_safe_actions) # find the safe actions for a given delta
 
     # find pmin safety values 
@@ -92,3 +91,7 @@ while not guarantee:
 shielded_actions = pmin_state_action_values <= delta
 allowed_actions = torch.logical_or(safest_actions, shielded_actions)
 
+print(pmin_state_values[-11])
+print(pmin_state_action_values[-11])
+print(pmax_state_values[-11])
+print(pmax_state_action_values[-11])
