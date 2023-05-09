@@ -1,7 +1,8 @@
 """
 note that the entire code is in terms of reachability and not safety - the logics will be just opposite
 """
-
+import sys
+import os
 import numpy as np 
 import torch 
 import copy
@@ -16,7 +17,8 @@ num_actions = transition.shape[1]
 bad_state_values = torch.zeros((num_states,)).to(device)
 bad_state_values[:132] = 1.0
 
-req_safety_probability = 0.05
+req_safety_probability = 1 - float(sys.argv[1])
+print(req_safety_probability)
 
 """
 performing value iteration to compute the pmax safety values
@@ -83,15 +85,19 @@ while not guarantee:
 
     print("the current safety probability is %.6f and the current value of delta is %.6f" % (current_safety_probability, delta))
 
-    if abs(current_safety_probability - old_safety_probability) < eps:
+    if abs(current_safety_probability - old_safety_probability) < eps and current_safety_probability < req_safety_probability:
         break
     
     old_safety_probability = current_safety_probability
 
 shielded_actions = pmin_state_action_values <= delta
 allowed_actions = torch.logical_or(safest_actions, shielded_actions)
+allowed_actions = allowed_actions.detach().cpu().numpy()
+# print(allowed_actions)
+# print(pmin_state_action_values[1])
 
-print(pmin_state_values[-11])
-print(pmin_state_action_values[-11])
-print(pmax_state_values[-11])
-print(pmax_state_action_values[-11])
+save_dir = 'constant_generated/0_td/'
+os.makedirs(save_dir, exist_ok=True)
+save_loc = os.path.join(save_dir, 'shield_%s_prob.npy' % sys.argv[1])
+np.save(save_loc, allowed_actions)
+
