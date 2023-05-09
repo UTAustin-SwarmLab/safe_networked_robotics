@@ -27,7 +27,7 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(self.num_state_features,))
 
 		self.num_mdp_state_features = self.num_state_features + time_delay
-		print(self.num_mdp_state_features, time_delay)
+		# print(self.num_mdp_state_features, time_delay)
 
 		"""
 		### Episodic Task
@@ -48,8 +48,8 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		shielding stuff
 		"""
 		self.td = time_delay
-		state_action_values_path = 'constant_generated/state_action_values_%d_td.npy' % self.td  
-		self.state_action_values = np.load(state_action_values_path, allow_pickle=True).item()
+		shield_path = '../cruise_control/constant_generated/%d_td/shield_%.1f_prob.npy' % (self.td, delta)  
+		self.shield = np.load(shield_path, allow_pickle=True)
 
 		### relative distance abstraction
 		min_rel_dist = 0
@@ -109,9 +109,6 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		self.mdp_state = np.array([self.rel_init_dist, self.rel_init_vel], dtype=np.float32)
 		ustate = self.InitializeUstate()
 		self.mdp_state = np.concatenate((self.mdp_state, ustate))
-		#print("initial condition")
-		#print(self.mdp_state)
-
 
 	def InitializeRelDist(self):
 		if self.train:
@@ -129,30 +126,10 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		return np.zeros((self.td,))
  
 	def GetShield(self, mdp_discrete_state):
-		safe_actions = []
-		for action in range(self.num_discrete_actions):
-			mdp_state_action_pair = (mdp_discrete_state, action)
-			mdp_state_action_value = self.state_action_values[mdp_state_action_pair]
-			if mdp_state_action_value <= 1-self.delta:
-				safe_actions.append(action)
+		safe_actions_indices = np.where(self.shield[mdp_discrete_state])[0]
+		safe_actions = self.ego_acc_values[safe_actions_indices]
 		
 		return safe_actions
-
-	def GetMaxSafeAction(self, mdp_discrete_state):
-		mdp_state_action_values = []
-		for action in range(self.num_discrete_actions): 
-			mdp_state_action_pair = (mdp_discrete_state, action)
-			mdp_state_action_values.append(self.state_action_values[mdp_state_action_pair])
-
-		return mdp_state_action_values.index(min(mdp_state_action_values))
-
-	def GetPmaxValue(self, mdp_discrete_state):
-		mdp_state_action_values = []
-		for action in range(self.num_discrete_actions):
-			mdp_state_action_pair = (mdp_discrete_state, action)
-			mdp_state_action_values.append(self.state_action_values[mdp_state_action_pair])
-
-		return 1-min(mdp_state_action_values)
 
 	def AccelerationProfile(self, num_pts=4, N=100):
 		acc_pts = np.random.uniform(-self.fv_max_acc, self.fv_max_acc, num_pts)
@@ -198,7 +175,6 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 				break
 
 		disc_physical_state = (disc_rel_dist * len(self.rel_vel_tuples) + disc_rel_vel,)
-
 		cont_ustate = self.mdp_state[2:]
 		disc_ustate = cont_ustate.copy()
 		for ui in range(self.td):
@@ -216,26 +192,17 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		rel_vel = self.mdp_state[1]
 		ustate = self.mdp_state[2:]
 
-		#print(self.episode_steps)
-		#print(self.mdp_state)
-
 		if self.train:
 			ego_acc = action 
 		else:
 			mdp_discrete_state = self.ConvertCurrentMDPStateToDiscrete()
 			allowed_actions = self.GetShield(mdp_discrete_state) # allowed action indices
-			if len(allowed_actions) != 0:
-				max_allowed_action = self.ego_acc_values[max(allowed_actions)] # max discrete action
-				if action >= max_allowed_action:
-					action = max_allowed_action
-			else:
-				# if there are no allowed actions, take the action with highest pmax value
-				action_idx = self.GetMaxSafeAction(mdp_discrete_state)
-				action = self.ego_acc_values[action_idx]
-			ustate = np.append(ustate, action)
-			ego_acc = ustate[0]
-		#ustate = np.append(ustate, action)
-		#ego_acc = ustate[0]
+			max_allowed_action = max(allowed_actions)
+			if action >= max_allowed_action:
+				action = max_allowed_action 
+
+			ego_acc = action 
+
 		"""
 		### State transition
 		"""
@@ -249,11 +216,6 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		rel_vel = rel_vel + rel_acc*self.delt
 		self.mdp_state = np.array([rel_pos, rel_vel], dtype=np.float32)
 		self.mdp_state = np.concatenate((self.mdp_state, ustate[1:]))
-		#print(self.mdp_state)
-		#print("-----")
-		mdp_state = self.ConvertCurrentMDPStateToDiscrete()
-		pmax_val = self.GetPmaxValue(mdp_state)
-
 
 
 		"""
@@ -280,8 +242,7 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		if rel_pos < self.safety_dist or self.episode_steps >= self.max_episode_steps:
 			self.done = True 
 
-		info = {'dis_rem': rel_pos, 
-				'pmax': pmax_val}
+		info = {'dis_rem': rel_pos}
 
 		return obs, reward, self.done, info
 

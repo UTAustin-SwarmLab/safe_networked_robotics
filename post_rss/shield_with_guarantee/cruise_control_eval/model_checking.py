@@ -1,8 +1,7 @@
 import sys
-sys.path.remove('/usr/lib/python3/dist-packages')
 import numpy as np 
 
-def ValueIteration(V, Q, mdp, mdp_states, labels, num_actions, max_iter=10000, delta=1e-16):
+def ValueIteration(V, Q, mdp, mdp_states, labels, num_actions, max_iter=10000, delta=1e-6):
 
     # Start value iteration
     for i in range(max_iter):
@@ -40,7 +39,7 @@ def ValueIteration(V, Q, mdp, mdp_states, labels, num_actions, max_iter=10000, d
 td = int(sys.argv[1]) 
 num_actions = 5
 
-mdp = np.load('constant_generated/mdp_%d_td.npy' % td, allow_pickle=True).item()
+mdp = np.load('../cruise_control/constant_generated/mdp_%d_td.npy' % td, allow_pickle=True).item()
 #print(mdp)
 state_action_pairs = list(mdp.keys())
 mdp_states = [state_action_pairs[i][0] for i in range(0, len(state_action_pairs), num_actions)]
@@ -57,6 +56,7 @@ for mdp_state in mdp_states:
 V = {tuple(mdp_state):0 for mdp_state in mdp_states}
 Q = {tuple(state_action_pair):0 for state_action_pair in state_action_pairs}
 V, Q = ValueIteration(V, Q, mdp, mdp_states, bad_labels, num_actions) 
-np.save('constant_generated/state_values_%d_td' % td, V)
-np.save('constant_generated/state_action_values_%d_td' % td, Q)
-print(V)
+# np.save('constant_generated/state_values_%d_td' % td, V)
+# np.save('constant_generated/state_action_values_%d_td' % td, Q)
+pmin_values = list(V.values())
+print(pmin_values[313])

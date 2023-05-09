@@ -43,6 +43,8 @@ min_vals, _ = torch.min(pmin_state_action_values, dim=1)
 mask = pmin_state_action_values == min_vals.view(-1, 1)
 safest_actions[mask] = True
 
+print(pmin_state_values[313])
+
 """
 performinng binary search due to the non-decreasing property
 """

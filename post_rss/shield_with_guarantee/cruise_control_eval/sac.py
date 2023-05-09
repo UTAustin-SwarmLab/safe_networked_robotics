@@ -38,7 +38,6 @@ class SoftActorCritic():
         self.state_space = self.env.observation_space
         self.action_space = self.env.action_space
         self.max_action = self.action_space.high[0]
-        print(self.state_space, self.action_space)
         """
         ### Initialize policy and value functions for the Soft Actor Critic
         """
@@ -313,7 +312,7 @@ class SoftActorCritic():
         test_episodes_returns = []
         last_distance_remaining = []
         min_distance_remaining = []
-        pmax_values = []
+        # pmax_values = []
 
         for test_ep_idx in range(args.num_test_episodes):
             print("test episode number : %d" % test_ep_idx)
@@ -336,7 +335,7 @@ class SoftActorCritic():
 
                 if info['dis_rem'] < min_dist_rem:
                     min_dist_rem = info['dis_rem']
-                    pmax_values.append(info['pmax'])
+                    # pmax_values.append(info['pmax'])
 
             test_episodes_returns.append(episode_return)
             last_distance_remaining.append(info['dis_rem'])
@@ -351,7 +350,7 @@ class SoftActorCritic():
         min_distance_remaining = np.array(min_distance_remaining)
         #pmax_values = np.array(pmax_values)
 
-        return test_episodes_returns, last_distance_remaining, min_distance_remaining, pmax_values 
+        return test_episodes_returns, last_distance_remaining, min_distance_remaining 
 
     """
     ### Visualization function, generates the plots of position, velocity, and acceleration 
