@@ -48,7 +48,7 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		shielding stuff
 		"""
 		self.td = time_delay
-		shield_path = '../cruise_control/constant_generated/%d_td/shield_%.1f_prob.npy' % (self.td, delta)  
+		shield_path = 'constant_generated/%d_td/shield_%.1f_prob.npy' % (self.td, delta)  
 		self.shield = np.load(shield_path, allow_pickle=True)
 
 		### relative distance abstraction

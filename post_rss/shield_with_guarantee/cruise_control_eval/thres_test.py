@@ -61,12 +61,12 @@ if __name__ == "__main__":
 	parser.add_argument('--train', default=False, action='store_true')
 	parser.add_argument("--random_seed", type=int, default=0)
 
-	parser.add_argument("--num_time_delays", type=int, default=1)
+	parser.add_argument("--num_time_delays", type=int, default=2)
 	parser.add_argument("--delta", type=float, default=0.99)
 		
 	args = parser.parse_args()   
 
-	thres_list = [0.0, 0.2, 0.5, 0.8, 0.9, 0.95]
+	thres_list = [0.1, 0.5, 0.9]
 	plotting_list = []
 	failure_list = []
 	pmax_plotting_list = []
@@ -118,7 +118,7 @@ if __name__ == "__main__":
 	fig = plt.figure()
 	plot = sns.boxplot(x='time delay', y='min distance', data=df, order = None, hue = 'Threshold')
 	
-	plt.ylim(-10, 30)
+	plt.ylim(-10, 80)
 	plt.savefig('min_dis_bp.pdf')
 	plt.clf()
 	plt.close()

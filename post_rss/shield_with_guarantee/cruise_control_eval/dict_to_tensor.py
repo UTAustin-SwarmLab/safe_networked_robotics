@@ -21,6 +21,7 @@ device = torch.device("cuda:0")
 transition = torch.zeros((num_states*num_actions, num_states)).to(device)
 
 for i, key in enumerate(mdp_keys):
+    print(key)
     next_states = mdp[key]
     transition[i][next_states] = 1/len(next_states)
 
