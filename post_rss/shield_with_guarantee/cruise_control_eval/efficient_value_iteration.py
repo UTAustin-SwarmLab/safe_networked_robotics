@@ -15,7 +15,6 @@ num_states = transition.shape[1]
 num_actions = int(transition.shape[0]/num_states)
 
 inc = num_actions**td
-
 req_safety_probability = 1 - float(sys.argv[2])
 
 """
@@ -23,16 +22,18 @@ performing value iteration to compute the pmax safety values
 """
 
 eps = 1e-6
-pmin_state_values = torch.zeros((num_states, 1), dtype=torch.float32).to(device) # initialization
+pmin_state_values = torch.zeros((num_states, 1)).to(device) # initialization
 old_pmin_state_values = copy.deepcopy(pmin_state_values)
 max_err = 1000
+
 while max_err > eps:
     pmin_state_action_values = torch.sparse.mm(transition, pmin_state_values).view(num_states, num_actions)
-    print("here")
     pmin_state_values = torch.min(pmin_state_action_values, dim=1).values 
     pmin_state_values[:int(132*inc)] = 1.0
+    pmin_state_values = pmin_state_values.view(-1,1)
     max_err = torch.max(pmin_state_values - old_pmin_state_values)
     old_pmin_state_values = pmin_state_values
+    print("the current max error is ", max_err)
 
 pmin_state_action_values = torch.sparse.mm(transition, pmin_state_values).view(num_states, num_actions)
 pmin_state_values = torch.min(pmin_state_action_values, dim=1).values
