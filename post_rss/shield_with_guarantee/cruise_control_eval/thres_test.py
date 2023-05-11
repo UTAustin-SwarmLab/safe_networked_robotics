@@ -118,7 +118,7 @@ if __name__ == "__main__":
 	fig = plt.figure()
 	plot = sns.boxplot(x='time delay', y='min distance', data=df, order = None, hue = 'Threshold')
 	
-	plt.ylim(-10, 80)
+	plt.ylim(-10, 200)
 	plt.savefig('min_dis_bp.pdf')
 	plt.clf()
 	plt.close()

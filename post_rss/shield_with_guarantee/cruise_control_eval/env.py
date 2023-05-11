@@ -183,14 +183,19 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 			disc_ustate[ui] = disc_val
 		disc_ustate = tuple(disc_ustate)
 
+		increments = [self.num_discrete_actions**k for k in range(self.td)]
+		increments.reverse()
+		increments = [self.num_discrete_actions**self.td,] + increments
 		discrete_state = disc_physical_state + disc_ustate
-		return discrete_state
+		#print(discrete_state, np.sum(np.multiply(discrete_state, increments)))
+		return int(np.sum(np.multiply(discrete_state, increments)))
 
 	def step(self, action):
 		action = action[0]
 		rel_pos = self.mdp_state[0]
 		rel_vel = self.mdp_state[1]
 		ustate = self.mdp_state[2:]
+		print(self.mdp_state)
 
 		if self.train:
 			ego_acc = action 
@@ -201,7 +206,11 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 			if action >= max_allowed_action:
 				action = max_allowed_action 
 
-			ego_acc = action 
+			# ego_acc = action 
+
+		ustate = np.append(ustate, action)
+		ego_acc = ustate[0]
+
 
 		"""
 		### State transition
