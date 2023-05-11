@@ -10,37 +10,31 @@ import copy
 device = torch.device("cuda:0")
 
 td = int(sys.argv[1])
-#transition = np.load('constant_generated/%d_td/transition.npy' % td, allow_pickle=True)
-#transition = torch.tensor(transition, dtype=torch.float32).to(device)
 transition = torch.load('constant_generated/%d_td/transition' % td)
-num_states = transition.shape[0]
-num_actions = transition.shape[1]
+num_states = transition.shape[1]
+num_actions = int(transition.shape[0]/num_states)
 
 inc = num_actions**td
 
-bad_state_values = torch.zeros((num_states,)).to(device)
-bad_state_values[:int(132*inc)] = 1.0
-
 req_safety_probability = 1 - float(sys.argv[2])
-print(req_safety_probability)
 
 """
 performing value iteration to compute the pmax safety values
 """
 
 eps = 1e-6
-pmin_state_values = torch.zeros((num_states,), dtype=torch.float32).to(device) # initialization
+pmin_state_values = torch.zeros((num_states, 1), dtype=torch.float32).to(device) # initialization
 old_pmin_state_values = copy.deepcopy(pmin_state_values)
 max_err = 1000
-transition = transition.view(num_states*num_actions, num_states)
 while max_err > eps:
     pmin_state_action_values = torch.sparse.mm(transition, pmin_state_values).view(num_states, num_actions)
+    print("here")
     pmin_state_values = torch.min(pmin_state_action_values, dim=1).values 
     pmin_state_values[:int(132*inc)] = 1.0
     max_err = torch.max(pmin_state_values - old_pmin_state_values)
     old_pmin_state_values = pmin_state_values
 
-pmin_state_action_values = torch.sparse.mm(transition, pmin_state_values)
+pmin_state_action_values = torch.sparse.mm(transition, pmin_state_values).view(num_states, num_actions)
 pmin_state_values = torch.min(pmin_state_action_values, dim=1).values
 safest_actions = torch.zeros_like(pmin_state_action_values)
 
