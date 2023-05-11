@@ -1,5 +1,4 @@
 import sys
-sys.path.remove('/usr/lib/python3/dist-packages')
 import os
 import math
 import itertools
@@ -61,7 +60,18 @@ ustates = list(itertools.product(list(range(len(ego_acc_values))), repeat=td))
 ### for storage
 """
 mdp = {}
-states = []
+
+num_physical_states = len(rel_dist_tuples) * len(rel_vel_tuples)
+num_ustates = len(ustates)
+num_states = num_physical_states*num_ustates
+num_actions = len(ego_acc_values)
+
+def convert_state_to_int(state):
+	increments = [num_actions**k for k in range(td)]
+	increments.reverse()
+	increments = [num_ustates,] + increments
+	return np.sum(np.multiply(list(state), increments))
+
 
 """
 ### iteration over possible states
@@ -81,11 +91,12 @@ for state_rel_dist in rel_dist_tuples:
 
 		for ustate in ustates:
 			state = physical_state + ustate 
-			states.append(state)
-			
+			# print(state, convert_state_to_int(state))
+			state_id = convert_state_to_int(state)
+
 			for acc_val in ego_acc_values:
 				action = ego_acc_values.index(acc_val)
-				state_action_pair = (state, action)
+				state_action_pair = (state_id, action)
 				#print('------------------')
 				#print(state_action_pair)
 				#print(state_rel_dist, state_rel_vel, ustate, action)
@@ -145,7 +156,7 @@ for state_rel_dist in rel_dist_tuples:
 				for next_state_rel_dist in next_states_rel_dist:
 					for next_state_rel_vel in next_states_rel_vel:
 						next_state = (next_state_rel_dist * len(rel_vel_tuples) + next_state_rel_vel,) + next_ustate
-						transitions.append(next_state)
+						transitions.append(convert_state_to_int(next_state))
 
 				mdp[state_action_pair] = transitions 
 
@@ -153,7 +164,8 @@ for state_rel_dist in rel_dist_tuples:
 				#print(next_states_rel_dist)
 				#print(state_action_pair)
 				#print(transitions)
-				
+print(mdp)
+
 os.makedirs('constant_generated', exist_ok=True)
 np.save('constant_generated/mdp_%d_td' % td, mdp)
 #np.save('constant_generated/states_%d_td' % td, states)

@@ -1,5 +1,4 @@
 import sys
-sys.path.remove('/usr/lib/python3/dist-packages')
 import os
 import math
 import itertools
@@ -64,13 +63,7 @@ min_ego_acc = -1
 max_ego_acc = 1 
 del_acc = 0.5
 
-#ego_acc_tuples = [(0.0, 0.0)]
-#for i in range(int((max_ego_acc - min_ego_acc) / del_acc)):
-#	ego_acc_tuples.append((min_ego_acc + i * del_acc, min_ego_acc + (i + 1) * del_acc))
-
 ego_acc_values = [-1.0, -0.5, 0.0, 0.5, 1.0]
-
-#print(ego_acc_tuples)
 
 """
 ### possible time delay states
@@ -98,17 +91,11 @@ for state_rel_dist in rel_dist_tuples:
 		state_max_rel_vel = state_rel_vel[1]
 
 		rel_vel_idx = rel_vel_tuples.index(state_rel_vel)
-		state = (rel_dist_idx*len(rel_vel_tuples) + rel_vel_idx,)
-
-		#print(state_rel_dist, state_rel_vel, state)
+		state = rel_dist_idx*len(rel_vel_tuples) + rel_vel_idx
 
 		for ego_acc in ego_acc_values:
 			action = ego_acc_values.index(ego_acc)
 			state_action_pair = (state, action)
-
-			#print('------------------')
-			#print(state_action_pair)
-			#print(state_rel_dist, state_rel_vel, ego_acc)
 
 			max_ego_acc = ego_acc
 			min_rel_acc = env_min_fv_acc - max_ego_acc 
@@ -164,11 +151,11 @@ for state_rel_dist in rel_dist_tuples:
 			for next_state_rel_dist in next_states_rel_dist:
 				for next_state_rel_vel in next_states_rel_vel:
 					next_state = next_state_rel_dist * len(rel_vel_tuples) + next_state_rel_vel
-					transitions.append((next_state,))
+					transitions.append(next_state)
 
 			mdp[state_action_pair] = transitions 
 
-#print(mdp)
+print(mdp)
 
 os.makedirs('constant_generated', exist_ok=True)
 np.save('constant_generated/mdp_%d_td' % td, mdp)
