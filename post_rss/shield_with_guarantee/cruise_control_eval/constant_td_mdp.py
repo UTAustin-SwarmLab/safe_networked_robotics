@@ -44,8 +44,8 @@ rel_vel_tuples = [(neg_large_val, min_rel_vel)] + rel_vel_tuples + [(max_rel_vel
 """
 ### actions abstraction
 """
-env_min_fv_acc = -0.5 
-env_max_fv_acc = 0.5 
+env_min_fv_acc = -0.25 
+env_max_fv_acc = 0.25 
 
 ego_acc_values = [-1.0, -0.5, 0.0, 0.5, 1.0]
 

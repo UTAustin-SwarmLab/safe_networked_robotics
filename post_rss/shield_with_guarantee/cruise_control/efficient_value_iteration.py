@@ -9,7 +9,7 @@ import copy
 
 device = torch.device("cuda:0")
 
-transition = np.load('constant_generated/transition_arr/0_td.npy', allow_pickle=True)
+transition = np.load('../cruise_control/constant_generated/transition_arr/0_td.npy', allow_pickle=True)
 transition = torch.tensor(transition, dtype=torch.float32).to(device)
 num_states = transition.shape[0]
 num_actions = transition.shape[1]
@@ -33,6 +33,7 @@ while max_err > eps:
     pmin_state_values[:132] = 1.0
     max_err = torch.max(pmin_state_values - old_pmin_state_values)
     old_pmin_state_values = pmin_state_values
+    print("the current max error is ", max_err)
 
 pmin_state_action_values = torch.matmul(transition, pmin_state_values)
 pmin_state_values = torch.min(pmin_state_action_values, dim=1).values
@@ -98,7 +99,7 @@ allowed_actions = allowed_actions.detach().cpu().numpy()
 # print(allowed_actions)
 # print(pmin_state_action_values[1])
 
-save_dir = 'constant_generated/0_td/'
+save_dir = '../cruise_control/constant_generated/0_td/'
 os.makedirs(save_dir, exist_ok=True)
 save_loc = os.path.join(save_dir, 'shield_%s_prob.npy' % sys.argv[1])
 np.save(save_loc, allowed_actions)

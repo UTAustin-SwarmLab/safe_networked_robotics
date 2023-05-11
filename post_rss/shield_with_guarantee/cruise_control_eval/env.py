@@ -41,7 +41,7 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		"""
 		self.safety_dist = 5	# Required distance between the ego and front vehicle
 		self.violating_safety_dist_reward = -10	# Reward for getting too close to the front car 
-		self.fv_max_acc = 0.5  # 1m/s^2
+		self.fv_max_acc = 0.25  # 1m/s^2
 		self.delt = 1 # 1s time step 
 
 		"""
@@ -195,7 +195,7 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		rel_pos = self.mdp_state[0]
 		rel_vel = self.mdp_state[1]
 		ustate = self.mdp_state[2:]
-		print(self.mdp_state)
+		# print(self.mdp_state)
 
 		if self.train:
 			ego_acc = action 
@@ -203,10 +203,8 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 			mdp_discrete_state = self.ConvertCurrentMDPStateToDiscrete()
 			allowed_actions = self.GetShield(mdp_discrete_state) # allowed action indices
 			max_allowed_action = max(allowed_actions)
-			if action >= max_allowed_action:
+			if action >= max_allowed_action and self.delta > 0:
 				action = max_allowed_action 
-
-			# ego_acc = action 
 
 		ustate = np.append(ustate, action)
 		ego_acc = ustate[0]

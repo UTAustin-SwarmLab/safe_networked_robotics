@@ -105,35 +105,43 @@ guarantee = False
 old_reachability = 1.0
 eps = 1e-6
 
-while not guarantee:
-    Vmax = {mdp_state:0 for mdp_state in mdp_states}
-    Qmax = {state_action_pair:0 for state_action_pair in state_action_pairs}
-    Vmax, Qmax = ValueIterationForMinSafety(Vmax, Qmax, Vmin, Qmin, threshold, mdp, mdp_states, bad_labels, num_actions)
-    current_reachability = Vmax[num_states-11*inc]
-    if current_reachability > req_reachability:
-        threshold_max = threshold 
-    else:
-        threshold_min = threshold 
-
-    if current_reachability < req_reachability:
-        guarantee = True
-        opt_threshold = threshold
-    else:
-        threshold = (threshold_min + threshold_max)/2
-
-    print("the current reachability is %.6f and the current value of threshold is %.6f" % (current_reachability, threshold))
-
-num_states = len(mdp_states)
-shield = np.zeros((num_states, num_actions))
-for state_action_pair in state_action_pairs:
-    state = state_action_pair[0]
-    action = state_action_pair[1]
-    if Qmin[state_action_pair] <= opt_threshold or Qmin[state_action_pair] == Vmin[state]: 
-        shield[state][action] = 1 
-    else:
-        shield[state][action] = 0
-
 save_dir = 'constant_generated/%d_td/' % td
 os.makedirs(save_dir, exist_ok=True)
-save_loc = os.path.join(save_dir, 'shield_%s_prob.npy' % sys.argv[2])
-np.save(save_loc, shield)
+
+if req_reachability == 1:
+    shield = np.ones((num_states, num_actions))
+    save_loc = os.path.join(save_dir, 'shield_%s_prob.npy' % sys.argv[2])
+    np.save(save_loc, shield)
+else:
+    while not guarantee:
+        Vmax = {mdp_state:0 for mdp_state in mdp_states}
+        Qmax = {state_action_pair:0 for state_action_pair in state_action_pairs}
+        Vmax, Qmax = ValueIterationForMinSafety(Vmax, Qmax, Vmin, Qmin, threshold, mdp, mdp_states, bad_labels, num_actions)
+        current_reachability = Vmax[num_states-11*inc]
+        if current_reachability > req_reachability:
+            threshold_max = threshold 
+        else:
+            threshold_min = threshold 
+
+        if current_reachability < req_reachability:
+            guarantee = True
+            opt_threshold = threshold
+        else:
+            threshold = (threshold_min + threshold_max)/2
+
+        print("the current reachability is %.6f and the current value of threshold is %.6f" % (current_reachability, threshold))
+
+    num_states = len(mdp_states)
+    shield = np.zeros((num_states, num_actions))
+    for state_action_pair in state_action_pairs:
+        state = state_action_pair[0]
+        action = state_action_pair[1]
+        if Qmin[state_action_pair] <= opt_threshold or Qmin[state_action_pair] == Vmin[state]: 
+            shield[state][action] = 1 
+        else:
+            shield[state][action] = 0
+    
+    
+    save_loc = os.path.join(save_dir, 'shield_%s_prob.npy' % sys.argv[2])
+    np.save(save_loc, shield)
+

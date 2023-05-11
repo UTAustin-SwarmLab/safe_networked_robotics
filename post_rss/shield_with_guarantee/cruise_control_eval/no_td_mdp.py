@@ -56,8 +56,8 @@ max_rel_vel_list = [tup[1] for tup in rel_vel_tuples]
 """
 ### actions abstraction
 """ 
-env_min_fv_acc = -0.5
-env_max_fv_acc = 0.5
+env_min_fv_acc = -0.25
+env_max_fv_acc = 0.25
 
 min_ego_acc = -1
 max_ego_acc = 1 

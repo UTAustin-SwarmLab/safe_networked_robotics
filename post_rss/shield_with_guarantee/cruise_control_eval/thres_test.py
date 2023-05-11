@@ -66,7 +66,7 @@ if __name__ == "__main__":
 		
 	args = parser.parse_args()   
 
-	thres_list = [0.1, 0.5, 0.9]
+	thres_list = [0.0, 0.1, 0.5, 0.9]
 	plotting_list = []
 	failure_list = []
 	pmax_plotting_list = []
@@ -118,7 +118,7 @@ if __name__ == "__main__":
 	fig = plt.figure()
 	plot = sns.boxplot(x='time delay', y='min distance', data=df, order = None, hue = 'Threshold')
 	
-	plt.ylim(-10, 200)
+	plt.ylim(-10, 100)
 	plt.savefig('min_dis_bp.pdf')
 	plt.clf()
 	plt.close()
