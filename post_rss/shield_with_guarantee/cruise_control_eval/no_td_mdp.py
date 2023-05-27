@@ -63,7 +63,7 @@ min_ego_acc = -1
 max_ego_acc = 1 
 del_acc = 0.5
 
-ego_acc_values = [-1.0, -0.5, 0.0, 0.5, 1.0]
+ego_acc_values = [-0.5, -0.25, 0.0, 0.25, 0.5]
 
 """
 ### possible time delay states
@@ -79,6 +79,10 @@ states = []
 """
 ### iteration over possible states
 """
+
+mdp_indices = []
+mdp_values = []
+mdp_unsafe_states = []
 
 for state_rel_dist in rel_dist_tuples:
 	state_min_rel_dist = state_rel_dist[0] 
