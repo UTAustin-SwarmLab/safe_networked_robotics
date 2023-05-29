@@ -1,8 +1,4 @@
 # safe_networked_robotics
-
-Cruise control example - 
-
-# dtac-dev
 The is the repo of **S**afe **N**etworked **R**obotics **v**ia **F**ormal **V**erification. 
 
 Link to paper: [Safe Networked Robotics via Formal Verification](https://arxiv.org/abs/2302.09182)
