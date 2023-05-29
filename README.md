@@ -18,7 +18,7 @@ avoidance. This paper develops methods to ensure the safety of teleoperated robo
 ## Results
 ![results](safe_networked_robotics/demo_plots/sim_results.png "results")
 **Top:** Qualitative and Quantitative results that highlight the safety efficiency trade-off for our car following environment  
-**Bottom:** Qualitative and Quantitative results that highlight the safety efficiency trade-off for our car following environment  
+**Bottom:** Qualitative and Quantitative results that highlight the safety efficiency trade-off for our grid-world environment  
 
 
 ## Usage
