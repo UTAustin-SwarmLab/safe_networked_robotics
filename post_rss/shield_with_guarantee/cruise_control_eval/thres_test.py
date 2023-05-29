@@ -23,7 +23,7 @@ font = {'family' : 'normal',
 		'weight' : 'bold',
 		'size'   : FONT_SIZE}
 plt.rc('font', **font)
-plt.rcParams['text.latex.preamble'] = [r'\boldmath']
+# plt.rcParams['text.latex.preamble'] = [r'\boldmath']
 
 LEGEND_FONT_SIZE = 14
 XTICK_LABEL_SIZE = 14
@@ -66,7 +66,7 @@ if __name__ == "__main__":
 		
 	args = parser.parse_args()   
 
-	thres_list = [0.0, 0.1, 0.5, 0.9]
+	thres_list = [0.0,0.5, 0.8, 0.9, 0.95]
 	plotting_list = []
 	failure_list = []
 	pmax_plotting_list = []
@@ -118,7 +118,7 @@ if __name__ == "__main__":
 	fig = plt.figure()
 	plot = sns.boxplot(x='time delay', y='min distance', data=df, order = None, hue = 'Threshold')
 	
-	plt.ylim(-10, 100)
+	plt.ylim(0, 20)
 	plt.savefig('min_dis_bp.pdf')
 	plt.clf()
 	plt.close()

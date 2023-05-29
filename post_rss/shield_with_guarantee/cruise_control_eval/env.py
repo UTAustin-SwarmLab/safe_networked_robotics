@@ -41,7 +41,7 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		"""
 		self.safety_dist = 5	# Required distance between the ego and front vehicle
 		self.violating_safety_dist_reward = -10	# Reward for getting too close to the front car 
-		self.fv_max_acc = 0.25  # 1m/s^2
+		self.fv_max_acc = 0.1  # 1m/s^2
 		self.delt = 1 # 1s time step 
 
 		"""
@@ -52,9 +52,9 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		self.shield = np.load(shield_path, allow_pickle=True)
 
 		### relative distance abstraction
-		min_rel_dist = 0
-		max_rel_dist = 25 
-		del_rel_dist = 1.0  
+		min_rel_dist = 5
+		max_rel_dist = 15 
+		del_rel_dist = 0.5  
 
 		rel_dist_tuples = []
 		for i in range(int((max_rel_dist - min_rel_dist) / del_rel_dist)):
@@ -67,9 +67,9 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		#print(rel_dist_tuples)
 
 		### relative velocity abstraction
-		min_rel_vel = -10
-		max_rel_vel = 10
-		del_vel = 1.0
+		min_rel_vel = -5
+		max_rel_vel = 5
+		del_vel = 0.5
 
 
 		rel_vel_tuples = []
@@ -82,7 +82,7 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		self.rel_vel_tuples = [(neg_large_val, min_rel_vel)] + rel_vel_tuples + [(max_rel_vel, pos_large_val)]
 		#print(rel_vel_tuples)
 
-		self.ego_acc_values = np.array([-1.0, -0.5, 0.0, 0.5, 1.0])
+		self.ego_acc_values = np.array([-0.25, 0.0, 0.25, 0.5, 0.75, 1.0])
 		self.num_discrete_actions = self.ego_acc_values.shape[0]
 
 		self.delta = delta	# minimum probability that a state-action pair must have to satisfy the specification
@@ -114,7 +114,7 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		if self.train:
 			return 100
 		else:
-			return 100
+			return 15
 
 	def InitializeRelVel(self):
 		if self.train:
@@ -132,7 +132,7 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		return safe_actions
 
 	def AccelerationProfile(self, num_pts=4, N=100):
-		acc_pts = np.random.uniform(-self.fv_max_acc, self.fv_max_acc, num_pts)
+		acc_pts = np.random.uniform(0.5, 1.0, num_pts)
 		#print(acc_pts)
 		acc_pts = np.insert(acc_pts, 0, 0)
 		acc_pts = np.append(acc_pts, 0)

@@ -9,9 +9,9 @@ del_t = 1.0
 """
 ### relative distance abstraction
 """
-min_rel_dist = 0
-max_rel_dist = 25  
-del_rel_dist = 1.0  
+min_rel_dist = 5
+max_rel_dist = 15  
+del_rel_dist = 0.5  
 
 rel_dist_tuples = []
 for i in range(int((max_rel_dist - min_rel_dist) / del_rel_dist)):
@@ -26,9 +26,9 @@ rel_dist_tuples = [(neg_large_val, min_rel_dist)] + rel_dist_tuples + [(max_rel_
 """
 ### relative velocity abstraction
 """
-min_rel_vel = -10
-max_rel_vel = 10
-del_vel = 1.0
+min_rel_vel = -5
+max_rel_vel = 5
+del_vel = 0.5
  
 
 rel_vel_tuples = []
@@ -44,10 +44,10 @@ rel_vel_tuples = [(neg_large_val, min_rel_vel)] + rel_vel_tuples + [(max_rel_vel
 """
 ### actions abstraction
 """
-env_min_fv_acc = -0.25 
-env_max_fv_acc = 0.25 
+env_min_fv_acc = 0.5 
+env_max_fv_acc = 1.0 
 
-ego_acc_values = [-1.0, -0.5, 0.0, 0.5, 1.0]
+ego_acc_values = [-0.25, 0.0, 0.25, 0.5, 0.75, 1.0]
 
 
 """
@@ -76,6 +76,8 @@ def convert_state_to_int(state):
 """
 ### iteration over possible states
 """
+mdp_unsafe_states = []
+mdp_initial_states = []
 
 for state_rel_dist in rel_dist_tuples:
 	state_min_rel_dist = state_rel_dist[0] 
@@ -93,6 +95,17 @@ for state_rel_dist in rel_dist_tuples:
 			state = physical_state + ustate 
 			# print(state, convert_state_to_int(state))
 			state_id = convert_state_to_int(state)
+
+			if state_max_rel_dist <= min_rel_dist:
+				mdp_unsafe_states.append(1.0)
+			else:
+				mdp_unsafe_states.append(0.0) 
+
+
+			if state_min_rel_dist >= 13 and state_max_rel_dist <= 15 and state_min_rel_vel >= 0 and state_max_rel_vel <= 0.5:
+				mdp_initial_states.append(1.0)
+			else:
+				mdp_initial_states.append(0.0)
 
 			for acc_val in ego_acc_values:
 				action = ego_acc_values.index(acc_val)
@@ -159,13 +172,8 @@ for state_rel_dist in rel_dist_tuples:
 						transitions.append(convert_state_to_int(next_state))
 
 				mdp[state_action_pair] = transitions 
-
-				#print(next_state_min_rel_dist, next_state_max_rel_dist)
-				#print(next_states_rel_dist)
-				#print(state_action_pair)
-				#print(transitions)
-print(mdp)
-
+				
 os.makedirs('constant_generated', exist_ok=True)
 np.save('constant_generated/mdp_%d_td' % td, mdp)
-#np.save('constant_generated/states_%d_td' % td, states)
+np.save('constant_generated/unsafe_%d_td' % td, mdp_unsafe_states)
+np.save('constant_generated/initial_%d_td' % td, mdp_initial_states)
