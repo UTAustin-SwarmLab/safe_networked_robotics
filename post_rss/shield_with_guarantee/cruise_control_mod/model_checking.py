@@ -80,7 +80,7 @@ def ValueIterationForMinSafety(Vmin, Qmin, threshold, mdp, labels, initial_label
             break 
 
     # print(*Q[np.where(initial_labels)[0]])
-    initial_labels = 1-labels
+    # initial_labels = 1-labels
     num_initial_states = np.where(initial_labels)[0].shape[0]
     print(V[initial_labels == 1.0])
     return np.dot(V, initial_labels)/num_initial_states, Q
@@ -102,56 +102,31 @@ Qmin = np.zeros((num_states, num_actions))
 Vmin, Qmin = ValueIteration(Vmin, Qmin, mdp, bad_labels) 
 # print(Qmin[np.where(initial_labels)[0]])
 max_init_safety = 1-Vmin[np.where(1-bad_labels)[0]]
-print(max_init_safety)
+# print(max_init_safety)
 
 save_dir = 'constant_generated/%d_td/' % td
 os.makedirs(save_dir, exist_ok=True)
 
-delta = 0.999
+delta = 0.99
 threshold = 1-delta
 
-if threshold == 1:
-    shield = np.ones((num_states, num_actions))
-    current_safety = 1-threshold
-    num = Decimal(str(current_safety))
-    num = round(num, 2)
-    save_loc = os.path.join(save_dir, 'shield_%s_prob.npy' % str(num))
-    print(current_safety)
-    np.save(save_loc, shield)
-
-elif threshold == 0:
-    shield = np.zeros((num_states, num_actions))
-    for state_action_pair in state_action_pairs:
-        state = state_action_pair[0]
-        action = state_action_pair[1]
-        if Qmin[state_action_pair] <= threshold or Qmin[state_action_pair] == Vmin[state]: 
-            shield[state][action] = 1 
-        else:
-            shield[state][action] = 0
-    current_safety = 1-threshold
-    num = Decimal(str(current_safety))
-    num = round(num, 2)
-    save_loc = os.path.join(save_dir, 'shield_%s_prob.npy' % str(num))
-    print(current_safety)
-    np.save(save_loc, shield)
-
-else:
-    current_reachability, Qmax = ValueIterationForMinSafety(Vmin, Qmin, threshold, mdp, bad_labels, initial_labels)
-    current_safety = 1 - current_reachability
+current_reachability, Qmax = ValueIterationForMinSafety(Vmin, Qmin, threshold, mdp, bad_labels, initial_labels)
+current_safety = 1 - current_reachability
+print(current_safety)
     
-    shield = np.zeros((num_states, num_actions))
-    for state_action_pair in state_action_pairs:
-        state = state_action_pair[0]
-        action = state_action_pair[1]
-        if Qmin[state_action_pair] <= threshold or Qmin[state_action_pair] == Vmin[state]: 
-            shield[state][action] = 1 
-        else:
-            shield[state][action] = 0
-    num = Decimal(str(current_safety))
-    num = round(num, 2)
-    save_loc = os.path.join(save_dir, 'shield_%s_prob.npy' % str(num))
-    print(current_safety)
-    np.save(save_loc, shield)
+    # shield = np.zeros((num_states, num_actions))
+    # for state_action_pair in state_action_pairs:
+    #     state = state_action_pair[0]
+    #     action = state_action_pair[1]
+    #     if Qmin[state_action_pair] <= threshold or Qmin[state_action_pair] == Vmin[state]: 
+    #         shield[state][action] = 1 
+    #     else:
+    #         shield[state][action] = 0
+    # num = Decimal(str(current_safety))
+    # num = round(num, 2)
+    # save_loc = os.path.join(save_dir, 'shield_%s_prob.npy' % str(num))
+    # print(current_safety)
+    # np.save(save_loc, shield)
 
 # threshold_min = 0.0 
 # threshold_max = 1.0 

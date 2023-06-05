@@ -56,7 +56,7 @@ if __name__ == "__main__":
 	parser.add_argument("--polyak", type=float, default=0.995)
 	parser.add_argument("--total_steps", type=int, default=10000)
 	parser.add_argument("--modify_alpha_after", type=int, default=100000)
-	parser.add_argument("--num_test_episodes", type=int, default=1)	
+	parser.add_argument("--num_test_episodes", type=int, default=100)	
 	parser.add_argument("--log_dir", type=str, default='tmp/sac/basic_sac')
 	parser.add_argument('--train', default=False, action='store_true')
 	parser.add_argument("--random_seed", type=int, default=0)
@@ -66,8 +66,8 @@ if __name__ == "__main__":
 		
 	args = parser.parse_args()   
 
-	# thres_list = [0.0, 0.91, 0.95, 0.98, 0.99]
-	thres_list = [0.0]
+	thres_list = [0.0, 0.54, 0.61, 0.77, 0.95, 0.98]
+	# thres_list = [0.0]
 	plotting_list = []
 	failure_list = []
 	pmax_plotting_list = []

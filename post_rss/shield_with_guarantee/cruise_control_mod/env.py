@@ -119,7 +119,7 @@ class ConstTdContinuousCruiseCtrlEnv(gym.Env):
 		return safe_actions
 
 	def AccelerationProfile(self, num_pts=4, N=100):
-		acc_pts = np.random.uniform(0.0, 0.5, num_pts)
+		acc_pts = np.random.uniform(-0.5, 0.5, num_pts)
 		#print(acc_pts)
 		acc_pts = np.insert(acc_pts, 0, 0)
 		acc_pts = np.append(acc_pts, 0)

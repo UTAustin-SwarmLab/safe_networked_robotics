@@ -107,3 +107,18 @@ threshold = 1-delta
 current_reachability = ValueIterationForActualSafety(Vmin, Qmin, threshold, mdp, bad_labels, initial_labels)
 current_safety = 1 - current_reachability
 print(current_safety)
+
+num_states = len(mdp_states)
+shield = np.zeros((num_states, num_actions))
+for state_action_pair in state_action_pairs:
+    state = state_action_pair[0]
+    action = state_action_pair[1]
+    if Qmin[state_action_pair] <= threshold or Qmin[state_action_pair] == Vmin[state]: 
+        shield[state][action] = 1 
+    else:
+        shield[state][action] = 0
+    
+num = Decimal(str(current_safety))
+num = round(num, 2)
+save_loc = os.path.join(save_dir, 'shield_%s_prob.npy' % str(num))
+np.save(save_loc, shield)

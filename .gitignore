@@ -1,4 +1,8 @@
 post_rss/shield_with_guarantee/cruise_control/constant_generated
 post_rss/shield_with_guarantee/cruise_control_eval/tmp
 post_rss/shield_with_guarantee/cruise_control_eval/constant_generated
-post_rss/shield_with_guarantee/cruise_control_mod/constant_generated
+post_rss/make_it_work/cruise_control_mod/constant_generated
+post_rss/make_it_work/cruise_control_mod/random_generated
+post_rss/make_it_work/cruise_control_eval/
+post_rss/make_it_work/grid_world/
+post_rss/make_it_work/demo_shield/

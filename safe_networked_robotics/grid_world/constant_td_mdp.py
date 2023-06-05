@@ -6,7 +6,7 @@ import itertools
 
 xmin = 0
 xmax = 7 
-ymin = 0 
+ymin = 0  
 ymax = 7
 
 actions_dict = {0:'stay', 1:'up', 2:'right', 3:'down', 4:'left'}
