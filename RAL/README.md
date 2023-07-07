@@ -10,10 +10,10 @@ Check requirements.txt
 
 ## Usage
 
-### Repicate our results for car following
+### Replicate our results for car following
 Check the readme file within the cruise_control_env directory 
 
 
-### Repicate our results for grid world
+### Replicate our results for grid world
 Check the readme file within the grid_world_env directory 
 
