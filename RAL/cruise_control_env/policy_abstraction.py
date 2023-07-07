@@ -41,12 +41,14 @@ basic_mdp = BasicMDP()
 abs_dnn_policy = {}
 for rel_dist_idx in range(basic_mdp.num_rel_dist_indices):
 	for rel_vel_idx in range(basic_mdp.num_rel_vel_indices):
-		state_rel_dist = basic_mdp.rel_dist_list[rel_dist_idx]
-		state_rel_vel = basic_mdp.rel_vel_list[rel_vel_idx]
 		physical_state = (rel_dist_idx, rel_vel_idx) # discrete system state
-		continuous_state = (state_rel_dist, state_rel_vel) # actual continuous system state
 		state_id = basic_mdp.convert_physical_state_to_int(physical_state)
 		state = (state_id,)
+
+		state_rel_dist = basic_mdp.rel_dist_list[rel_dist_idx]
+		state_rel_vel = basic_mdp.rel_vel_list[rel_vel_idx]
+		continuous_state = (state_rel_dist, state_rel_vel) # actual continuous system state
+		
 		print("physical state: ", physical_state, "continuous state: ", continuous_state)
 
 		continuous_state_tensor = torch.tensor(continuous_state, dtype=torch.float32).unsqueeze(0)

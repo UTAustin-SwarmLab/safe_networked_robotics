@@ -32,10 +32,10 @@ class BasicMDP:
 		self.ego_acc_values = [-0.5, -0.25, 0.0, 0.25, 0.5]
 		self.num_actions = len(self.ego_acc_values)
 
-		print(self.rel_dist_list)
-		print(self.rel_vel_list)
-		print(self.fv_acc_list)
-		print(self.ego_acc_values)
+		# print(self.rel_dist_list)
+		# print(self.rel_vel_list)
+		# print(self.fv_acc_list)
+		# print(self.ego_acc_values)
 
 		self.unsafe_dist = 5.0 
 		self.initial_dist = 25
@@ -54,6 +54,7 @@ class BasicMDP:
 		return id
 
 	def is_unsafe(self, physical_state):
+		assert len(physical_state) == 2
 		state_rel_dist = self.rel_dist_list[physical_state[0]]
 		if state_rel_dist <= self.unsafe_dist:
 			return 1.0
@@ -89,26 +90,27 @@ class BasicMDP:
 		next_rel_dist_idxs = np.digitize(next_rel_dist_values, self.rel_dist_list)
 		# print(next_rel_dist_values)
 		# print(next_rel_dist_idxs)
-		for i in range(next_rel_dist_idxs.shape[0]):
-			if next_rel_dist_idxs[i] == 0:
+		for rdidx in range(next_rel_dist_idxs.shape[0]):
+			if next_rel_dist_idxs[rdidx] == 0:
 				continue
 			else:
-				next_rel_dist_idxs[i] -= 1
+				next_rel_dist_idxs[rdidx] -= 1
 		# print(next_rel_dist_idxs, [self.rel_dist_list[kdx] for kdx in next_rel_dist_idxs])
 		
 
 		next_rel_vel_idxs = np.digitize(next_rel_vel_values, self.rel_vel_list)
 		# print(next_rel_vel_values)
 		# print(next_rel_vel_idxs)
-		for i in range(next_rel_vel_idxs.shape[0]):
-			if next_rel_vel_idxs[i] == 0:
+		for rvidx in range(next_rel_vel_idxs.shape[0]):
+			if next_rel_vel_idxs[rvidx] == 0:
 				continue
 			else:
-				next_rel_vel_idxs[i] -= 1
+				next_rel_vel_idxs[rvidx] -= 1
 		# print(next_rel_vel_idxs, [self.rel_vel_list[kdx] for kdx in next_rel_vel_idxs])
 
 		next_state_ids = []
-		# print(rel_dist_val, rel_vel_val, ego_acc_val, next_rel_dist_idxs, next_rel_vel_idxs)
+		# print(next_rel_dist_idxs)
+		# print(next_rel_vel_idxs)
 		for next_rel_dist_idx, next_rel_vel_idx in zip(next_rel_dist_idxs, next_rel_vel_idxs):
 			# print(next_rel_dist_idx, next_rel_vel_idx)
 			next_physical_state = (next_rel_dist_idx, next_rel_vel_idx)
@@ -122,10 +124,10 @@ class BasicMDP:
 		# print(unique_ids, occurrences)
 
 		total_transitions = len(next_state_ids)
-		unique_states = [(unique_ids[i],) for i in range(len(unique_ids))]
-		probabilities = [occurrences[i]/total_transitions for i in range(len(occurrences))]
+		unique_states = [(unique_ids[unqidx],) for unqidx in range(len(unique_ids))]
+		probabilities = [occurrences[occidx]/total_transitions for occidx in range(len(occurrences))]
 		# print(unique_states, probabilities)	
-
+		assert round(sum(probabilities), 2) == 1.0 
 		return unique_states, probabilities 
 	
 	def generate_basic_mdp(self):
@@ -168,7 +170,7 @@ class BasicMDP:
 
 		mdp_loc = os.path.join(self.log_dir, 'mdp_0_td')
 		np.save(mdp_loc, self.mdp)
-		print(self.mdp)
+		# print(self.mdp)
 
 if __name__ == "__main__":
 	log_dir = 'constant_generated'

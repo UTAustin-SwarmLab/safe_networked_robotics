@@ -31,13 +31,13 @@ def obtain_modified_policy(mdp_states, policy, epsilon_shield):
     modified_policy = {}
     for state in mdp_states:
         physical_state = (state[0],)
-        task_efficient_action = policy[physical_state]
+        task_efficient_action = policy[physical_state] # remember, this is a continuous action
         epsilon_shielded_actions = epsilon_shield[state]
 
-        if task_efficient_action <= ego_acc_list[-1]:
-            action = np.where(ego_acc_list >= task_efficient_action)[0][0]
-            if action in epsilon_shielded_actions:
-                modified_policy[state] = action # unmodified
+        if task_efficient_action <= ego_acc_list[-1]: # if the action is within limits
+            task_efficient_discrete_action = np.where(ego_acc_list >= task_efficient_action)[0][0]
+            if task_efficient_discrete_action in epsilon_shielded_actions:
+                modified_policy[state] = task_efficient_discrete_action # unmodified
             else:
                 modified_policy[state] = int(max(epsilon_shielded_actions)) # executing the most optimal action from the epsilon shield
         else:
