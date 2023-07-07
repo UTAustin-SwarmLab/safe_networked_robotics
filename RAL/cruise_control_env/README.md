@@ -50,6 +50,3 @@ python pmax_threshold_random.py
 ```
 python quantitative_plot.py
 ```
-
-pyhon safe_networked_robotics/cruise_control_eval/thres_test.py
-```
