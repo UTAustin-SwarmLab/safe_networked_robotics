@@ -37,6 +37,8 @@ def obtain_modified_policy(mdp_states, policy, epsilon_shield):
         # obtaining the task efficient action
         task_efficiency_values = policy[basic_mdp_state]
         task_efficient_action = task_efficiency_values.index(max(task_efficiency_values))
+        assert len(task_efficiency_values) == num_actions
+        assert task_efficiency_values[task_efficient_action] == max(task_efficiency_values)
 
         # obtaining the most safe action
         epsilon_shielded_actions = epsilon_shield[state]
@@ -46,7 +48,9 @@ def obtain_modified_policy(mdp_states, policy, epsilon_shield):
             qvalue = Qmax[state_action_pair]
             max_safety_values.append(qvalue)
         most_safe_action = max_safety_values.index(max(max_safety_values))
-        # print(max_safety_values, most_safe_action)
+        assert len(max_safety_values) == num_actions
+        assert max_safety_values[most_safe_action] == max(max_safety_values)
+        
 
         if task_efficient_action in epsilon_shielded_actions:
             modified_policy[state] = task_efficient_action
@@ -55,7 +59,7 @@ def obtain_modified_policy(mdp_states, policy, epsilon_shield):
 
     return modified_policy
 
-def ValueIterationForActualSafety(mdp, mdp_states, zero_td_bad_labels, zero_td_goal_labels, zero_td_init_labels, policy, td, eps=1e-4):   
+def ValueIterationForActualSafety(mdp, mdp_states, zero_td_bad_labels, zero_td_goal_labels, zero_td_init_labels, policy, td, eps=1e-16):   
     V = {state:0 for state in mdp_states}
 
      # Start value iteration

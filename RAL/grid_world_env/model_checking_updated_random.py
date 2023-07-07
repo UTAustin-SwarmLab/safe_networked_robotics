@@ -39,8 +39,8 @@ def obtain_modified_policy(mdp, prob, mdp_states, policy, epsilon_shield):
         
         # obtaining the task efficient action
         task_efficiency_values = policy[basic_mdp_state]
-        assert len(task_efficiency_values) == num_actions
         task_efficient_action = task_efficiency_values.index(max(task_efficiency_values))
+        assert len(task_efficiency_values) == num_actions
         assert task_efficiency_values[task_efficient_action] == max(task_efficiency_values)
 
         # obtaining the most safe action
@@ -50,11 +50,11 @@ def obtain_modified_policy(mdp, prob, mdp_states, policy, epsilon_shield):
             state_action_pair = (state, a_idx)
             next_states = mdp[state_action_pair]
             next_states_prob = prob[state_action_pair]
-            next_states_values = [Vmax[next_states[ii]] for ii in range(len(next_states))]
+            next_states_values = [Vmax[next_states[ii]] for ii in range(len(next_states))] 
             qvalue = sum([nsv*nsp for nsv,nsp in zip(next_states_values, next_states_prob)])
             max_safety_values.append(qvalue)
-        assert len(max_safety_values) == num_actions
         most_safe_action = max_safety_values.index(max(max_safety_values))
+        assert len(max_safety_values) == num_actions
         assert most_safe_action in epsilon_shielded_actions        
         assert max_safety_values[most_safe_action] == max(max_safety_values)
 

@@ -29,7 +29,7 @@ class BasicMDP:
 		self.actions_dict = {0:'stay', 1:'up', 2:'right', 3:'down', 4:'left'}
 		self.actions_list = list(self.actions_dict.keys())
 
-		self.mdp = {}
+		self.mdp = {} 
 		self.mdp_states = {}
 		self.mdp_unsafe_states = {}
 		self.mdp_initial_states = {}
@@ -158,12 +158,12 @@ class BasicMDP:
 		for rx in range(self.xmin, self.xmax+1):
 			for ry in range(self.ymin, self.ymax+1): 
 				for ax in range(self.xmin, self.xmax+1):
-					for ay in range(self.xmin, self.xmax+1):
+					for ay in range(self.ymin, self.ymax+1):
 						for flag in [0, 1]:
 							physical_state = (rx, ry, ax, ay, flag)
 							state_id = self.convert_physical_state_to_int(physical_state)
 							state = (state_id,)
-							print("state id : ", state_id, "state : ", state)
+							# print("state id : ", state_id, "state : ", state)
 							self.mdp_states[state_counter] = state
 							state_counter += 1
 
@@ -175,7 +175,7 @@ class BasicMDP:
 								state_action_pair = (state, act)
 								next_physical_states = self.dynamics(physical_state, act)
 								next_states = [(self.convert_physical_state_to_int(next_physical_state),) for next_physical_state in next_physical_states]
-								print(state_action_pair, physical_state, act, next_physical_states, next_states)
+								# print(state_action_pair, physical_state, act, next_physical_states, next_states)
 								self.mdp[state_action_pair] = next_states
 
 	def save_mdp(self):
