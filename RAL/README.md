@@ -6,12 +6,7 @@ The is the repo of **S**afe **N**etworked **R**obotics wia **P**robabilistic **V
 This paper develops methods to ensure the safety of teleoperated robots with stochastic latency. To do so, we use tools from formal verification to construct a shield (i.e.,run-time monitor) that provides a list of safe actions for any delayed sensory observation, given the expected and worst-case network latency.
 
 ## Requirements
-numpy
-matplotlib
-pandas
-seaborn
-pytorch 
-torchvision
+Check requirements.txt
 
 ## Usage
 
