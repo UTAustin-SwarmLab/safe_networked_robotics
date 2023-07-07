@@ -85,7 +85,7 @@ if __name__ == "__main__":
 			print("---------------------------------------------------------------")
 			print("safety probability : %f" % delta)		
 
-			test_env = DelayContinuousCruiseCtrlEnv(basic_mdp=basic_mdp, time_delay=time_delay, constant_delay=True, delta=delta)
+			test_env = DelayContinuousCruiseCtrlEnv(basic_mdp=basic_mdp, time_delay=time_delay, constant_delay=True, delta=delta, print_=False)
 			random_seeds = np.random.choice(10000, size=(num_test_episodes,))
 			last_dist_rem_arr_per_td = test(policy, test_env, random_seeds)  
 			
