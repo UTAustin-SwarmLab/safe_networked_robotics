@@ -1,7 +1,7 @@
 # safe_networked_robotics
-The is the repo of **S**afe **N**etworked **R**obotics **v**ia **F**ormal **V**erification. 
+The is the repo of **S**afe **N**etworked **R**obotics with **P**robabilistic **V**erification. 
 
-Link to paper: [Safe Networked Robotics via Formal Verification](https://arxiv.org/abs/2302.09182)
+Link to paper: [Safe Networked Robotics with Probabilistic Verification](https://arxiv.org/abs/2302.09182)
 
 
 ## TLDR
