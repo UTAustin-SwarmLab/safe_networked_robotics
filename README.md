@@ -23,11 +23,11 @@ Autonomous robots must utilize rich sensory data to make safe control decisions.
 
 ### Repicate our results for the car following experiments
 
-Check the [ReadMe for car following](cruise_control_env/ReadMe.md)
+Check the [ReadMe for car following](cruise_control_env/README.md)
 
 ### Repicate our results for the grid world experiments
 
-Check the [ReadMe for grid world](grid_world_env/ReadMe.md)
+Check the [ReadMe for grid world](grid_world_env/README.md)
 
 ## Citation
 If you find this repo useful, please cite our paper:
