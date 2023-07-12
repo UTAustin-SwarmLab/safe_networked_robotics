@@ -37,10 +37,8 @@ python model_checking_updated_random.py max_time_delay epsilon desired_safety
 ## 9. Get the quantitative results stored as a pkl file (to generate the box plot)
 ```
 python thres_test_mod.py
-
-This requires an RL agent to be trained. We provide a pretrained RL agent in the tmp directory. The policy model details are available in models.py
-
 ```
+This requires an RL agent to be trained. We provide a pretrained RL agent in the tmp directory. The policy model details are available in models.py
 ## 10. To generate the plot 3a.
 ```
 python pmax_threshold.py
